@@ -148,7 +148,7 @@ resource "aws_lb" "my_alb" {
   name               = "my-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.webserver_sg.id]
+  security_groups    = ["sg-00f5f766df51babe9"]  # Asegúrate de que este grupo pertenezca a la VPC especificada abajo
   subnets            = module.vpc.public_subnets
 }
 
