@@ -2,16 +2,16 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "5.56.1" # Ajusta la versión según tus necesidades
+      version = ">= 5.56.1"  # Ajusta la versión según tus necesidades
     }
   }
 }
 
-#VPC
 provider "aws" {
   region = "us-east-1"
 }
 
+# VPC
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
  
@@ -30,6 +30,7 @@ module "vpc" {
     Environment = "prd"
   }
 }
+
 # Security Group
 resource "aws_security_group" "webserver_sg" {
   name        = "webserver-sg"
@@ -60,7 +61,8 @@ resource "aws_security_group" "webserver_sg" {
     Name = "webserver-sg"
   }
 }
-#Creación Bucket S3
+
+# Creación Bucket S3
 resource "aws_s3_bucket" "my_bucket" {
   bucket = "my-bucket-mzavala190182"
 }
@@ -99,7 +101,7 @@ resource "aws_s3_object" "index_php" {
   content_type = "text/html"
 }
 
-#EC2
+# EC2
 resource "aws_instance" "ec2_instance" {
   count         = 3
   ami           = "ami-01b799c439fd5516a"  
@@ -117,7 +119,8 @@ resource "aws_instance" "ec2_instance" {
     Name = "webserver-${count.index}"
   }
 }
-#Creación y montaje del volumen EFS en las instancias EC2
+
+# Creación y montaje del volumen EFS en las instancias EC2
 resource "aws_efs_file_system" "efs" {
   creation_token = "my-efs"
   performance_mode = "generalPurpose"
@@ -139,7 +142,8 @@ resource "null_resource" "mount_efs" {
 
   depends_on = [aws_instance.ec2_instance]
 }
-#Balanceador de carga
+
+# Balanceador de carga
 resource "aws_lb" "my_alb" {
   name               = "my-alb"
   internal           = false
